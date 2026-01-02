@@ -21,7 +21,7 @@ A clean, in-memory Python console Todo application with 5 basic features.
 
 ```bash
 # Clone repository
-git clone <repository-url>
+git clone <https://github.com/SahirAhmedSheikh814/The-Evolution-of-Todo.git>
 cd TODO-APP
 
 # Create virtual environment with UV
