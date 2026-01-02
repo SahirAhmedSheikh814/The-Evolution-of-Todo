@@ -1,0 +1,54 @@
+[project]
+name = "todo-cli"
+version = "0.1.0"
+description = "In-memory Python console Todo application"
+readme = "README.md"
+requires-python = ">=3.13"
+authors = [
+    {name = "Todo CLI Team"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
+    "pylint>=3.0.0",
+    "mypy>=1.8.0",
+]
+
+[project.scripts]
+todo = "main:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=src --cov-report=term-missing"
+
+[tool.pylint.main]
+py-version = "3.13"
+max-line-length = 88
+disable = []
+
+[tool.pylint.messages_control]
+disable = [
+    "missing-module-docstring",
+]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

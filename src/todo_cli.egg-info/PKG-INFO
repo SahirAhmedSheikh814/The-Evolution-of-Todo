@@ -1,0 +1,197 @@
+Metadata-Version: 2.4
+Name: todo-cli
+Version: 0.1.0
+Summary: In-memory Python console Todo application
+Author: Todo CLI Team
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.13
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: pylint>=3.0.0; extra == "dev"
+Requires-Dist: mypy>=1.8.0; extra == "dev"
+
+# The Evolution of Todo - Phase 1: In-Memory Python CLI
+
+A clean, in-memory Python console Todo application with 5 basic features.
+
+## Features
+
+- **Add New Tasks** - Create tasks with title and description
+- **View Tasks** - List all tasks with completion status
+- **Update Tasks** - Modify task title and/or description
+- **Delete Tasks** - Remove tasks from list
+- **Mark Complete/Incomplete** - Toggle task completion status
+
+## Installation
+
+### Prerequisites
+
+- Python 3.13 or higher
+- UV package manager
+
+### Setup
+
+```bash
+# Clone repository
+git clone <repository-url>
+cd TODO-APP
+
+# Create virtual environment with UV
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+uv pip install pytest pytest-cov pylint mypy
+```
+
+## Usage
+
+### Running the Application (with UV)
+
+```bash
+# Option 1: Run from project directory (recommended)
+cd /mnt/e/TODO-APP
+uv run todo
+
+# Option 2: Run as module
+uv run -m todo
+
+# Option 3: Run with virtual environment
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv run todo
+```
+
+**Note**: All three options use UV to run the application. This is the recommended way to run UV-managed projects.
+
+### Example Session
+
+```
+Welcome to Todo CLI!
+Note: Tasks are stored in memory only. All data is lost when the application exits.
+
+==================================================
+Todo CLI Application
+==================================================
+1. Add Task
+2. View Tasks
+3. Update Task
+4. Delete Task
+5. Mark Complete/Incomplete
+0. Exit
+==================================================
+
+Enter your choice (0-5): 1
+
+--- Add New Task ---
+Enter task title: Review PR
+Enter task description: Check code quality and test coverage
+
+Task 1 added successfully!
+
+==================================================
+Todo CLI Application
+================================================== ...
+```
+
+## Features in Detail
+
+### 1. Add Task
+Creates a new task with a sequential ID. Both title and description are required.
+
+### 2. View Tasks
+Displays all tasks with their completion status marker:
+- `[ ]` = Incomplete
+- `[X]` = Complete
+
+### 3. Update Task
+Modify task title and/or description by task ID. Press Enter to keep current value.
+
+### 4. Delete Task
+Remove a task permanently. IDs are never reused.
+
+### 5. Mark Complete/Incomplete
+Toggle task completion status by task ID.
+
+## Testing
+
+```bash
+# Run all tests
+pytest tests/
+
+# Run with coverage report
+pytest tests/ --cov=src --cov-report=term-missing
+
+# Run specific test file
+pytest tests/test_services.py
+```
+
+## Code Quality
+
+```bash
+# Run pylint (target: >=9.5/10)
+pylint src/ --max-line-length=88
+
+# Run mypy strict mode
+mypy --strict src/
+```
+
+## Project Structure
+
+```
+TODO-APP/
+├── src/
+│   ├── models/          # Data models (Task)
+│   ├── services/        # Business logic (TaskManager)
+│   ├── cli/             # CLI interface (commands, display)
+│   └── main.py          # Application entry point
+├── tests/               # Unit and integration tests
+├── specs/               # Feature specifications
+├── pyproject.toml       # Project configuration
+└── README.md
+```
+
+## Limitations
+
+- **In-memory storage only**: All tasks are lost when the application exits
+- **Single session**: No persistence between runs
+- **No user authentication**: Single-user, local session only
+- **No task prioritization**: Tasks are listed in creation order
+- **No task prioritization**: Tasks are listed in creation order
+
+## Development
+
+This project follows Spec-Kit Plus workflow with:
+- Spec-driven development only
+- Clean architecture (models/services/CLI separation)
+- TDD approach with pytest
+- Python 3.13+ and PEP 8 standards
+
+For development guidelines, see `CLAUDE.md`.
+
+## Troubleshooting
+
+### "No tasks yet!" message
+This is normal when starting the application or after deleting all tasks. Use option 1 to add tasks.
+
+### Task not found errors
+Use option 2 (View Tasks) to see all valid task IDs before updating, deleting, or marking complete.
+
+### Invalid ID format error
+Enter a numeric ID (positive integer) when prompted for task ID.
+
+### Empty input error
+Both title and description are required when adding a task. At least one field is required when updating.
+
+## License
+
+MIT License
+
+## Version
+
+Phase 1 - Version 0.1.0
