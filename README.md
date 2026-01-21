@@ -1,181 +1,140 @@
-# The Evolution of Todo - Phase 1: In-Memory Python CLI
+# The Evolution of Todo – Mastering Spec-Driven Development & Cloud Native AI
 
-A clean, in-memory Python console Todo application with 5 basic features.
+**Hackathon Project:** This repository chronicles the journey of building a production-grade application using **Spec-Driven Development (SDD)** principles, evolving from a simple in-memory Python console app (Phase 1) to a scalable, cloudy-native full-stack solution (Phase 2).
 
-## Features
+---
 
-- **Add New Tasks** - Create tasks with title and description
-- **View Tasks** - List all tasks with completion status
-- **Update Tasks** - Modify task title and/or description
-- **Delete Tasks** - Remove tasks from list
-- **Mark Complete/Incomplete** - Toggle task completion status
+# Phase 1: Python Console Application
 
-## Installation
+A robust, in-memory command-line interface (CLI) Todo application designed to demonstrate clean architecture, strict typing, and comprehensive testing in Python.
 
-### Prerequisites
+## Technology Stack
 
-- Python 3.13 or higher
-- UV package manager
+- **Language**: Python 3.13+
+- **Dependency Manager**: UV
+- **Testing**: pytest (High coverage required)
+- **Quality**: pylint, mypy (Strict mode)
 
-### Setup
+## Architecture
 
-```bash
-# Clone repository
-git clone <https://github.com/SahirAhmedSheikh814/The-Evolution-of-Todo.git>
-cd TODO-APP
+- **Models**: Pure data classes (`src/models`)
+- **Services**: Business logic and state management (`src/services`)
+- **CLI**: User interface and command handling (`src/cli`)
 
-# Create virtual environment with UV
-uv venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+## Getting Started
 
-# Install dependencies
-uv pip install pytest pytest-cov pylint mypy
-```
+1. **Setup Environment**:
+   ```bash
+   uv venv
+   source .venv/bin/activate
+   uv pip install -e .
+   ```
 
-## Usage
+2. **Run Application**:
+   ```bash
+   python -m src.main
+   ```
 
-### Running the Application (with UV)
+3. **Run Tests**:
+   ```bash
+   pytest tests/ --cov=src
+   ```
 
-```bash
-# Option 1: Run from project directory (recommended)
-cd /mnt/e/TODO-APP
-uv run todo
+## Key Features
 
-# Option 2: Run as module
-uv run -m todo
+- Add, List, Complete, and Delete tasks.
+- Input validation and error handling.
+- persistent in-memory storage during session.
 
-# Option 3: Run with virtual environment
-uv venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-uv run todo
-```
+---
 
-**Note**: All three options use UV to run the application. This is the recommended way to run UV-managed projects.
+# Phase 2: Full-Stack Cloud Native Application
 
-### Example Session
+A modern, scalable web application leveraging Next.js (Frontend) and FastAPI (Backend) with a serverless PostgreSQL database.
 
-```
-Welcome to Todo CLI!
-Note: Tasks are stored in memory only. All data is lost when the application exits.
+## Technology Stack
 
-==================================================
-Todo CLI Application
-==================================================
-1. Add Task
-2. View Tasks
-3. Update Task
-4. Delete Task
-5. Mark Complete/Incomplete
-0. Exit
-==================================================
+### Frontend
+- **Framework**: Next.js 16+ (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS, Shadcn UI compatible
+- **State**: React Context + Hooks
+- **Validation**: Zod
 
-Enter your choice (0-5): 1
+### Backend
+- **Framework**: FastAPI (Async)
+- **Language**: Python 3.13+
+- **Database**: Neon Serverless PostgreSQL
+- **ORM**: SQLModel (SQLAlchemy + Pydantic)
+- **Migrations**: Alembic
+- **Auth**: JWT (HttpOnly Cookies)
 
---- Add New Task ---
-Enter task title: Review PR
-Enter task description: Check code quality and test coverage
-
-Task 1 added successfully!
-
-==================================================
-Todo CLI Application
-================================================== ...
-```
-
-## Features in Detail
-
-### 1. Add Task
-Creates a new task with a sequential ID. Both title and description are required.
-
-### 2. View Tasks
-Displays all tasks with their completion status marker:
-- `[ ]` = Incomplete
-- `[X]` = Complete
-
-### 3. Update Task
-Modify task title and/or description by task ID. Press Enter to keep current value.
-
-### 4. Delete Task
-Remove a task permanently. IDs are never reused.
-
-### 5. Mark Complete/Incomplete
-Toggle task completion status by task ID.
-
-## Testing
-
-```bash
-# Run all tests
-pytest tests/
-
-# Run with coverage report
-pytest tests/ --cov=src --cov-report=term-missing
-
-# Run specific test file
-pytest tests/test_services.py
-```
-
-## Code Quality
-
-```bash
-# Run pylint (target: >=9.5/10)
-pylint src/ --max-line-length=88
-
-# Run mypy strict mode
-mypy --strict src/
-```
-
-## Project Structure
+## Architecture
 
 ```
 TODO-APP/
-├── src/
-│   ├── models/          # Data models (Task)
-│   ├── services/        # Business logic (TaskManager)
-│   ├── cli/             # CLI interface (commands, display)
-│   └── main.py          # Application entry point
-├── tests/               # Unit and integration tests
-├── specs/               # Feature specifications
-├── pyproject.toml       # Project configuration
-└── README.md
+├── frontend/              # Next.js SPA
+│   ├── src/app/          # App Router Pages
+│   ├── src/components/   # Reusable UI Components
+│   └── src/lib/          # API Clients & Utils
+├── backend/               # FastAPI REST API
+│   ├── src/api/          # Route Handlers
+│   ├── src/core/         # Config & DB Setup
+│   └── src/models/       # Database Schemas
+└── specs/                 # Spec-Driven Development Artifacts
 ```
 
-## Limitations
+## Quick Start
 
-- **In-memory storage only**: All tasks are lost when the application exits
-- **Single session**: No persistence between runs
-- **No user authentication**: Single-user, local session only
-- **No task prioritization**: Tasks are listed in creation order
-- **No task prioritization**: Tasks are listed in creation order
+### 1. Backend Setup
 
-## Development
+```bash
+cd backend
+uv venv
+source .venv/bin/activate
+uv pip install -e .
 
-This project follows Spec-Kit Plus workflow with:
-- Spec-driven development only
-- Clean architecture (models/services/CLI separation)
-- TDD approach with pytest
-- Python 3.13+ and PEP 8 standards
+# Configure .env
+cp .env.example .env
+# Set DATABASE_URL=postgresql+asyncpg://...
 
-For development guidelines, see `CLAUDE.md`.
+# Run Migrations
+alembic upgrade head
 
-## Troubleshooting
+# Start Server
+uvicorn src.main:app --reload
+```
 
-### "No tasks yet!" message
-This is normal when starting the application or after deleting all tasks. Use option 1 to add tasks.
+### 2. Frontend Setup
 
-### Task not found errors
-Use option 2 (View Tasks) to see all valid task IDs before updating, deleting, or marking complete.
+```bash
+cd frontend
+npm install
 
-### Invalid ID format error
-Enter a numeric ID (positive integer) when prompted for task ID.
+# Configure .env
+cp .env.example .env.local
+# Set NEXT_PUBLIC_API_URL=http://localhost:8000
 
-### Empty input error
-Both title and description are required when adding a task. At least one field is required when updating.
+# Start Dev Server
+npm run dev
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000).
+
+## Feature Highlights
+
+- **Secure Authentication**: HttpOnly cookies with dynamic `Secure` flag handling (Local vs Prod).
+- **Responsive UI**: Mobile-first design with Tailwind CSS.
+- **Robust Error Handling**: User-friendly alerts without console pollution.
+- **Spec-Driven**: All features designed and specified before implementation.
+
+## Version History
+
+- **Phase 2 (v2.0.0)**: Full-stack implementation (Current)
+- **Phase 1 (v0.1.0)**: In-memory console implementation (Legacy)
+
+---
 
 ## License
 
 MIT License
-
-## Version
-
-Phase 1 - Version 0.1.0
-

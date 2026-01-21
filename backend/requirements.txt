@@ -1,0 +1,23 @@
+# FastAPI Backend Dependencies
+
+# Web Framework
+fastapi
+
+# ASGI Server
+uvicorn[standard]
+
+# ORM & Database
+sqlmodel
+alembic
+asyncpg
+
+# Authentication & Security
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt
+
+# Form Data Handling
+python-multipart
+
+# Environment Variables
+python-dotenv

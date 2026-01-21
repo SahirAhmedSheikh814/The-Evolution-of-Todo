@@ -113,7 +113,7 @@ You are not expected to solve every problem autonomously. You MUST invoke the us
 1.  **Ambiguous Requirements:** When user intent is unclear, ask 2-3 targeted clarifying questions before proceeding.
 2.  **Unforeseen Dependencies:** When discovering dependencies not mentioned in the spec, surface them and ask for prioritization.
 3.  **Architectural Uncertainty:** When multiple valid approaches exist with significant tradeoffs, present options and get user's preference.
-4.  **Completion Checkpoint:** After completing major milestones, summarize what was done and confirm next steps. 
+4.  **Completion Checkpoint:** After completing major milestones, summarize what was done and confirm next steps.
 
 ## Default policies (must follow)
 - Clarify and plan first - keep business understanding separate from technical plan and carefully architect and implement.
@@ -205,6 +205,8 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 - `history/prompts/` — Prompt History Records
 - `history/adr/` — Architecture Decision Records
 - `.specify/` — SpecKit Plus templates and scripts
+- `frontend/` — Next.js frontend
+- `backend/` — FastAPI backend
 
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
@@ -428,7 +430,101 @@ Phase 1 limitations (in-scope for future):
 - Multi-user support
 - Task tags/categories
 
+---
+
+# Todo Full-Stack - Phase 2: Development Guidelines
+
+## Project Overview
+
+This is a full-stack Todo application utilizing Next.js for the frontend and FastAPI for the backend with PostgreSQL persistence.
+
+## Technology Stack
+
+- **Frontend**: Next.js 16+ (App Router, TypeScript, Tailwind CSS)
+- **Backend**: Python FastAPI (Python 3.13+)
+- **Database**: Neon Serverless PostgreSQL
+- **ORM**: SQLModel
+- **Authentication**: Better Auth (JWT)
+- **Package Manager**: UV (Python), npm/yarn/pnpm (Node)
+- **Structure**: Monorepo
+
+## Architecture
+
+### Full-Stack Architecture
+
+```
+/
+├── frontend/        # Next.js application
+│   ├── src/
+│   │   ├── app/     # App Router pages
+│   │   ├── components/ # React components
+│   │   └── lib/     # Utilities and API clients
+├── backend/         # FastAPI application
+│   ├── src/
+│   │   ├── api/     # API routes
+│   │   ├── core/    # Config and security
+│   │   ├── models/  # SQLModel entities
+│   │   └── services/# Business logic
+├── specs/           # Specifications
+└── docker-compose.yml
+```
+
+### Design Principles
+
+- **Separation of Concerns**: Frontend handles UI/UX, Backend handles data/logic
+- **Stateless API**: RESTful endpoints with JWT authentication
+- **Type Safety**: TypeScript on frontend, Python type hints on backend
+- **Secure by Default**: Auth required for protected routes, input validation
+
+## Coding Standards
+
+### Python (Backend)
+- **Style**: PEP 8, Black/Ruff
+- **Types**: Strict type hints (mypy)
+- **Docs**: Google-style docstrings
+
+### TypeScript (Frontend)
+- **Style**: ESLint, Prettier
+- **Components**: Functional components with hooks
+- **State**: Server Components for data fetching, Client Components for interactivity
+
+## Development Workflow
+
+### Spec-Kit Plus Sequence
+
+1. **Constitution** → Principles and constraints
+2. **Specify** → Feature requirements
+3. **Clarify** → Resolve ambiguities
+4. **Plan** → Architecture design
+5. **Tasks** → Implementation breakdown
+6. **Implement** → Write code
+7. **QA** → Quality validation
+
+### Adding New Features
+
+1. Update `specs/<feature>/spec.md` with user stories
+2. Run `/sp.plan` to design changes (frontend + backend)
+3. Run `/sp.tasks` to generate implementation tasks
+4. Run `/sp.implement` to execute tasks
+5. Run `/sp.qa` to validate quality
+
+## Troubleshooting
+
+### Common Issues
+
+**CORS Errors**:
+- Check FastAPI CORS configuration (allowed origins)
+- Ensure frontend is calling correct API URL
+
+**Database Connection**:
+- Verify DATABASE_URL in .env
+- Check if migrations are applied (`alembic upgrade head`)
+
+**Authentication Failures**:
+- Check JWT token expiration
+- Verify secret keys match in env
+
 ## Version History
 
-- **Phase 1 (v0.1.0)**: Initial in-memory implementation with 5 features
-
+- **Phase 2 (v2.0.0)**: Full-stack implementation (Current)
+- **Phase 1 (v0.1.0)**: In-memory console implementation (Legacy)
