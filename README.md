@@ -26,23 +26,23 @@ A robust, in-memory command-line interface (CLI) Todo application designed to de
 1. **Setup Environment**:
    ```bash
    uv venv
-   source .venv/bin/activate On Windows: .venv\Scripts\activate
+   source .venv/bin/activate , On Windows: .venv\Scripts\activate
    uv pip install pytest pytest-cov pylint mypy .
    ```
 
 2. **Run Application**:
    ```bash
-###### Option 1: Run from project directory (recommended)
-cd /mnt/e/TODO-APP
-uv run todo
+   Option 1: Run from project directory (recommended)
+   cd /mnt/e/TODO-APP
+   uv run todo
 
-###### Option 2: Run as module
-uv run -m todo
+   Option 2: Run as module
+   uv run -m todo
 
-###### Option 3: Run with virtual environment
-uv venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-uv run todo
+   Option 3: Run with virtual environment
+   uv venv
+   source .venv/bin/activate , On Windows: .venv\Scripts\activate
+   uv run todo
    ```
 
 3. **Run Tests**:
