@@ -1,0 +1,204 @@
+openapi: 3.0.3
+info:
+  title: Todo AI Chatbot API
+  version: 1.0.0
+  description: Chat endpoints for AI-powered todo management
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local development
+
+paths:
+  /chat:
+    post:
+      summary: Send a chat message
+      description: |
+        Send a user message to the AI chatbot and receive a response.
+        The AI can perform todo operations (add, list, complete, delete, update).
+        Requires authentication via JWT cookie.
+      operationId: sendChatMessage
+      tags:
+        - Chat
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+            examples:
+              addTask:
+                summary: Add a task
+                value:
+                  message: "Add task buy groceries"
+              listTasks:
+                summary: List tasks
+                value:
+                  message: "Show my tasks"
+              romanUrdu:
+                summary: Roman Urdu command
+                value:
+                  message: "mujhe ek task add karna hai: meeting at 3pm"
+      responses:
+        '200':
+          description: Chat response with AI message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+              examples:
+                taskAdded:
+                  summary: Task added confirmation
+                  value:
+                    message: "Task 'buy groceries' has been added."
+                    conversation_id: "550e8400-e29b-41d4-a716-446655440000"
+                    created_at: "2026-01-27T10:30:00Z"
+        '400':
+          description: Invalid request (empty message, too long)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: AI service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                detail: "I'm having trouble connecting. Please try again in a moment."
+
+  /chat/history:
+    get:
+      summary: Get chat history
+      description: |
+        Retrieve the conversation history for the current user.
+        Returns messages in chronological order.
+        Supports pagination via offset/limit.
+      operationId: getChatHistory
+      tags:
+        - Chat
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of messages to return
+          schema:
+            type: integer
+            default: 50
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          description: Number of messages to skip (for pagination)
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: Conversation history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatHistoryResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session_token
+
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: User's chat message
+          minLength: 1
+          maxLength: 500
+          example: "Add task buy groceries"
+
+    ChatResponse:
+      type: object
+      required:
+        - message
+        - conversation_id
+        - created_at
+      properties:
+        message:
+          type: string
+          description: AI assistant's response
+          example: "Task 'buy groceries' has been added."
+        conversation_id:
+          type: string
+          format: uuid
+          description: Conversation identifier
+        created_at:
+          type: string
+          format: date-time
+          description: Response timestamp
+
+    ChatHistoryResponse:
+      type: object
+      required:
+        - messages
+        - total
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageItem'
+        total:
+          type: integer
+          description: Total messages in conversation
+        has_more:
+          type: boolean
+          description: Whether more messages exist before offset
+
+    MessageItem:
+      type: object
+      required:
+        - id
+        - role
+        - content
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+          description: Error message

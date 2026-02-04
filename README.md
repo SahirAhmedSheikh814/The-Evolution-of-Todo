@@ -145,6 +145,51 @@ The application will be available at [http://localhost:3000](http://localhost:30
 
 ---
 
+# Phase 3: AI-Powered Chatbot Integration
+
+An intelligent conversational agent "TaskFlow AI" integrated into the full-stack Todo application, enabling natural language task management via a professional, responsive UI widget.
+
+## Technology Stack
+
+- **AI Model**: OPEN_AI_API Model
+- **Frontend Integration**: React Floating Widget, Framer Motion
+- **Backend Service**: FastAPI AI Agent with Tool Calling
+- **Persistence**: PostgreSQL (Conversations & Messages)
+
+## Architecture
+
+- **Frontend**: Custom Chat Widget (`src/components/chat`)
+- **Backend**: AI Service (`src/services/ai_agent.py`) & Chat API (`src/api/chat.py`)
+- **Event Bus**: Real-time Todo updates via `todo-updated` event
+
+## Quick Start
+
+1. **Add API Key**:
+   Add `OPEN_AI_API=sk-...` to `backend/.env`.
+
+2. **Restart Backend**:
+   ```bash
+   uvicorn src.main:app --reload
+   ```
+
+3. **Interact**:
+   Open the application and click the floating chat icon to start managing tasks with natural language.
+
+## Feature Highlights
+
+- **Natural Language Processing**: Create, list, and delete tasks using conversational English.
+- **Context Awareness**: "Buy milk tomorrow" correctly infers dates.
+- **Real-Time Sync**: UI updates immediately when AI modifies tasks.
+- **Persistent History**: Chat conversations are saved and retrievable.
+
+## Version History
+
+- **Phase 3 (v3.0.0)**: AI-Powered Chatbot Integration (Current)
+- **Phase 2 (v2.0.0)**: Full-stack implementation (Legacy)
+- **Phase 1 (v0.1.0)**: In-memory console implementation (Legacy)
+
+---
+
 ## License
 
 MIT License

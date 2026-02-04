@@ -29,6 +29,12 @@ frontend/src/
 │   └── dashboard/       # Protected dashboard (Todo list)
 ├── components/          # Reusable UI components
 │   ├── auth/            # Auth forms (LoginForm, RegisterForm)
+│   ├── chat/            # Chatbot Widget System (Phase 3)
+│   │   ├── ChatWidget.tsx    # Main floating widget logic
+│   │   ├── ChatWindow.tsx    # Styled chat interface container
+│   │   ├── ChatMessages.tsx  # Scrollable message list
+│   │   ├── ChatBubble.tsx    # Individual message branding
+│   │   └── ChatInput.tsx     # Message composition
 │   ├── todos/           # Task components (TodoList, CreateTodo, TodoItem)
 │   └── ui/              # Primitive UI elements (Button, Input, Card)
 ├── context/             # React Context Providers
@@ -46,6 +52,7 @@ frontend/src/
 - **Protected Routes**: `ProtectedRoute` HOC component for access control.
 - **Client-Side Validation**: Zod schemas ensure data integrity before submission.
 - **Responsive Design**: Tailwind CSS utility classes for mobile-first layout.
+- **AI Chatbot**: Real-time natural language task management via floating widget (Phase 3).
 
 ## Development Workflow
 
@@ -84,6 +91,15 @@ npm start
 2. **Login**: POST `/auth/login` (sets `session_token` cookie).
 3. **Session Check**: GET `/auth/me` on app load (validates cookie).
 4. **Logout**: POST `/auth/logout` (clears cookie) -> Update local state.
+
+### AI Integration (Phase 3)
+
+- **Widget**: `ChatWidget` handles minimal/expanded state options via `framer-motion`.
+- **Event Bus**: Dispatches `todo-updated` window event upon successful AI actions to trigger Todo list refresh without page reload.
+- **Components**:
+  - `ChatWindow`: TaskFlow branded container with glassmorphism header.
+  - `LoginGate`: Prompts unauthenticated users to login directly in-chat.
+  - `ChatBubble`: Semantic styling (User=Gradient, AI=Muted) with timezone management.
 
 ## Coding Standards
 

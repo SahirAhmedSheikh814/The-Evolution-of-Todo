@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { api } from '../../lib/api';
 import { TodoItem } from './TodoItem';
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,20 +9,36 @@ export const TodoList: React.FC = () => {
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
+      console.log('Fetching tasks...');
       const { data } = await api.get('/todos');
       setTasks(data);
     } catch (error) {
-      console.error('Failed to fetch tasks');
+      console.error('Failed to fetch tasks', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+
+    const handleTodoUpdate = () => {
+      console.log('Received todo-updated event');
+      fetchTasks();
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('todo-updated', handleTodoUpdate);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('todo-updated', handleTodoUpdate);
+      }
+    };
+  }, [fetchTasks]);
 
   const handleUpdate = async (id: string, data: any) => {
     await api.patch(`/todos/${id}`, data);

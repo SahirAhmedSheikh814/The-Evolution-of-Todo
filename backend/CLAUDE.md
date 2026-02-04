@@ -23,6 +23,7 @@ The backend is a high-performance, asynchronous REST API built with FastAPI and 
 backend/src/
 ├── api/                 # API Route handlers
 │   ├── auth.py          # Authentication endpoints
+│   ├── chat.py          # Chatbot endpoints (Phase 3)
 │   ├── deps.py          # Dependency injection (Current User, DB Session)
 │   ├── main.py          # Router aggregations
 │   └── todos.py         # Todo resource endpoints
@@ -31,8 +32,14 @@ backend/src/
 │   ├── db.py            # Database connection & init
 │   └── security.py      # Hashing & Token generation
 ├── models/              # SQLModel Database Models
+│   ├── conversation.py  # Chat conversation metadata
+│   ├── message.py       # Chat messages (history)
 │   ├── task.py          # Task entity
 │   └── user.py          # User entity
+├── services/            # Business Logic
+│   ├── ai_agent.py      # AI Orchestration & Tool Calling
+│   ├── chat_service.py  # Chat persistence & flow
+│   └── todo_tools.py    # Todo manipulation tools for AI
 └── main.py              # Application entry point
 ```
 
@@ -42,6 +49,7 @@ backend/src/
 - **Auto-Detect Security**: Dynamically configures cookie security (`Secure`, `SameSite`) based on environment (HTTP vs HTTPS).
 - **Strict Typing**: Full Python type hints compliance.
 - **Migrations**: Database schema managed via Alembic revisions.
+- **AI Integration**: Powered by OPEN_AI_API Model (Phase 3).
 
 ## Development Workflow
 
@@ -87,6 +95,11 @@ alembic upgrade head
 - **GET /{id}**: Get task details.
 - **PATCH /{id}**: Update task.
 - **DELETE /{id}**: Delete task.
+
+### Chat (`/api/v1/chat`) - Phase 3
+
+- **POST /**: Send natural language command (process via AI Agent). Features tool calling for Todo management.
+- **GET /history**: Retrieve paginated conversation history with timestamps (UTC).
 
 ## Security Standards
 

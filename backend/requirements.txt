@@ -21,3 +21,6 @@ python-multipart
 
 # Environment Variables
 python-dotenv
+
+# Phase 3: AI Chatbot Integration
+openai

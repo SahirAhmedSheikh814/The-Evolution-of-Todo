@@ -48,7 +48,7 @@ export default function Dashboard() {
                 <h2 className="text-lg font-semibold text-foreground mb-3">
                   Create a task
                 </h2>
-                <CreateTodo onTaskCreated={() => window.location.reload()} />
+                <CreateTodo onTaskCreated={() => window.dispatchEvent(new Event('todo-updated'))} />
               </div>
 
               <div className="h-px bg-white/10 my-8" />

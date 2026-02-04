@@ -524,7 +524,89 @@ This is a full-stack Todo application utilizing Next.js for the frontend and Fas
 - Check JWT token expiration
 - Verify secret keys match in env
 
+---
+
+# Todo AI Chatbot - Phase 3: Development Guidelines
+
+## Project Overview
+
+Phase 3 introduces "TaskFlow AI", an intelligent conversational agent integrated into the full-stack Todo application. It allows users to manage tasks via natural language, bridging the frontend (UI widget) and backend (AI Agent service).
+
+## Technology Stack
+
+- **AI Model**: OPEN_AI_API Model
+- **Frontend Integration**:
+  - React Floating Widget (Custom Component)
+  - Framer Motion (Animations)
+  - Custom Event Bus (`todo-updated`)
+- **Backend Integration**:
+  - FastAPI "AI Agent" Service
+  - Tool Calling (OPEN_AI_API)
+  - SQLModel Persistence (Conversations/Messages)
+
+## Architecture
+
+### AI Integration Architecture
+
+```
+/
+├── frontend/src/components/chat/
+│   ├── ChatWidget.tsx    # Floating togglable widget
+│   ├── ChatWindow.tsx    # Main conversation interface
+│   ├── ChatInput.tsx     # Message composition
+│   └── ChatBubble.tsx    # Message display (User/AI)
+├── backend/src/
+│   ├── api/chat.py       # Chat endpoints
+│   ├── services/
+│   │   ├── ai_agent.py   # Claude tool-calling logic
+│   │   └── chat_service.py # Persistence logic
+│   └── models/
+│       ├── conversation.py # Conversation metadata
+│       └── message.py    # Message history
+```
+
+### Key Features
+
+- **Natural Language Task Management**: Parse intents like "Buy milk tomorrow" into actionable Todo items.
+- **Context Awareness**: Agent knows current date/time and user context.
+- **Real-Time Updates**: Frontend refreshes Todo list automatically when AI modifies data (via `todo-updated` event).
+- **Persistence**: Full conversation history stored in PostgreSQL.
+- **Professional UI**: "TaskFlow AI" branding with Violet/Indigo gradients and glassmorphism.
+
+## Tooling & Capabilities
+
+### Supported Tools (AI Agent)
+
+1.  **create_todo**: Create a new task with title and optional description.
+2.  **list_todos**: Retrieve all active/completed tasks for the user.
+3.  **delete_todo**: Remove a task by ID.
+4.  **get_user_context**: Retrieve username and email.
+
+### Event Flow
+
+1.  **User**: Sends message ("Add buy milk")
+2.  **Frontend**: POST `/api/v1/chat/`
+3.  **Backend**:
+    - `ai_agent.py` processes prompt.
+    - Calls `create_todo` tool internally.
+    - Commits task to DB.
+    - Returns natural language response.
+4.  **Frontend**:
+    - Displays response.
+    - Emits `todo-updated` event.
+    - `TodoList` component catches event -> Refetch.
+
+## Development Workflow
+
+### Adding New AI Skills
+
+1. Define new tool signature in `backend/src/services/ai_agent.py`.
+2. Implement tool logic wrapper.
+3. Update specific Phase 3 prompt instructions if needed.
+4. Test with `/sp.qa` or manual interaction.
+
 ## Version History
 
-- **Phase 2 (v2.0.0)**: Full-stack implementation (Current)
+- **Phase 3 (v3.0.0)**: AI-Powered Chatbot Integration (Current)
+- **Phase 2 (v2.0.0)**: Full-stack implementation (Legacy)
 - **Phase 1 (v0.1.0)**: In-memory console implementation (Legacy)
