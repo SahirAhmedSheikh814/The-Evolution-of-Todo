@@ -132,8 +132,8 @@ npm run dev
 The application will be available at [http://localhost:3000](http://localhost:3000).
 
 ## Live Links
-Vercel Deployment link: [https://taskflow-seven-smoky.vercel.app/](https://taskflow-seven-smoky.vercel.app/)
-Backend API URL: [https://huggingface.co/spaces/sahirahmed814/Full_Stack_TODO_App](https://huggingface.co/spaces/sahirahmed814/Full_Stack_TODO_App)
+- **Vercel Deployment link**: [https://taskflow-seven-smoky.vercel.app/](https://taskflow-seven-smoky.vercel.app/)
+- **Backend API URL**: [https://huggingface.co/spaces/sahirahmed814/Full_Stack_TODO_App](https://huggingface.co/spaces/sahirahmed814/Full_Stack_TODO_App)
 
 ## Feature Highlights
 
