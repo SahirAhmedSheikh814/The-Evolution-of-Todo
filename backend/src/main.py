@@ -19,6 +19,7 @@ origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://taskflow-seven-smoky.vercel.app",
+    "http://127.0.0.1:40677",
 ]
 
 app.add_middleware(

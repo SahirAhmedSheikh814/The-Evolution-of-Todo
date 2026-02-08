@@ -1,0 +1,21 @@
+🎉 Todo App has been successfully deployed!
+
+To access your application:
+
+Frontend (NodePort):
+  export MINIKUBE_IP=$(minikube ip)
+  echo "Frontend URL: http://$MINIKUBE_IP:{{ .Values.frontend.service.nodePort }}"
+
+Backend API:
+  The backend is accessible within the cluster at:
+  http://{{ include "todo-web-app.fullname" . }}-backend:{{ .Values.backend.service.port }}
+
+To check the deployment status:
+  kubectl get pods -n {{ .Release.Namespace }}
+  kubectl get services -n {{ .Release.Namespace }}
+
+To view logs:
+  kubectl logs -f deployment/{{ include "todo-web-app.fullname" . }}-frontend
+  kubectl logs -f deployment/{{ include "todo-web-app.fullname" . }}-backend
+
+Happy task management! 🚀

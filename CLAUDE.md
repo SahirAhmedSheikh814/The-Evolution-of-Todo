@@ -605,8 +605,151 @@ Phase 3 introduces "TaskFlow AI", an intelligent conversational agent integrated
 3. Update specific Phase 3 prompt instructions if needed.
 4. Test with `/sp.qa` or manual interaction.
 
+---
+
+# Todo Kubernetes Deployment - Phase 4: Development Guidelines
+
+## Project Overview
+
+Phase 4 introduces local Kubernetes deployment using Minikube and Helm Charts. The full-stack Todo application (Frontend + Backend) is containerized with Docker and orchestrated via Kubernetes for scalable, production-like local deployment.
+
+## Technology Stack
+
+- **Container Runtime**: Docker Desktop
+- **Kubernetes**: Minikube (Local Cluster)
+- **Package Manager**: Helm 3.x (Kubernetes Charts)
+- **Orchestration**: kubectl, kubectl-ai
+- **Images**: Multi-stage Docker builds
+
+## Architecture
+
+### Kubernetes Deployment Architecture
+
+```
+/
+├── todo-web-app/              # Helm Chart
+│   ├── Chart.yaml             # Chart metadata (v1.0.0)
+│   ├── values.yaml            # Configuration values
+│   ├── templates/
+│   │   ├── backend-deployment.yaml   # Backend Pod spec
+│   │   ├── backend-service.yaml      # Backend Service (NodePort :30800)
+│   │   ├── frontend-deployment.yaml  # Frontend Pod spec
+│   │   ├── frontend-service.yaml     # Frontend Service (NodePort :30080)
+│   │   ├── serviceaccount.yaml       # RBAC Service Account
+│   │   ├── ingress.yaml              # Ingress (optional)
+│   │   └── hpa.yaml                  # Horizontal Pod Autoscaler
+│   └── README.md              # Deployment instructions
+├── frontend/
+│   ├── Dockerfile             # Multi-stage Next.js build
+│   └── .dockerignore          # Docker build exclusions
+├── backend/
+│   ├── Dockerfile             # Python FastAPI container
+│   └── .dockerignore          # Docker build exclusions
+```
+
+### Key Features
+
+- **Local Kubernetes**: Minikube cluster with Docker driver.
+- **Helm Charts**: Templated, versioned Kubernetes manifests.
+- **NodePort Services**: Direct access via `minikube ip` (Frontend: 30080, Backend: 30800).
+- **Health Checks**: Liveness and readiness probes for both services.
+- **Resource Limits**: CPU/Memory constraints for predictable performance.
+- **Non-Root Containers**: Security-hardened with dedicated users.
+
+## Docker Configuration
+
+### Frontend Dockerfile
+
+- **Base**: `node:20-alpine`
+- **Build**: Multi-stage (deps → builder → runner)
+- **Output**: Standalone Next.js server
+- **Port**: 3000
+
+### Backend Dockerfile
+
+- **Base**: `python:3.13-slim`
+- **Dependencies**: UV package manager, asyncpg
+- **Health Check**: `curl http://localhost:8000/health`
+- **Port**: 8000
+
+## Kubernetes Services
+
+### Backend Service (NodePort :30800)
+
+- Internal port: 8000
+- External access: `http://<minikube-ip>:30800`
+- API docs: `http://<minikube-ip>:30800/docs`
+
+### Frontend Service (NodePort :30080)
+
+- Internal port: 3000
+- External access: `http://<minikube-ip>:30080`
+
+## Development Workflow
+
+### Quick Start
+
+```bash
+# 1. Start Minikube
+minikube start --driver=docker --memory=4096 --cpus=2
+
+# 2. Build Docker images
+docker build -t todo-backend:latest ./backend
+docker build -t todo-frontend:latest ./frontend --build-arg NEXT_PUBLIC_API_URL=http://$(minikube ip):30800
+
+# 3. Load images into Minikube
+minikube image load todo-backend:latest
+minikube image load todo-frontend:latest
+
+# 4. Deploy with Helm
+helm install todo-app ./todo-web-app --namespace default
+
+# 5. Access application
+minikube ip  # Get cluster IP
+# Frontend: http://<minikube-ip>:30080
+# Backend:  http://<minikube-ip>:30800
+```
+
+### Useful Commands
+
+```bash
+# Check pods
+kubectl get pods -l app.kubernetes.io/name=todo-web-app
+
+# View logs
+kubectl logs -l app.kubernetes.io/component=backend
+kubectl logs -l app.kubernetes.io/component=frontend
+
+# Port forward (alternative access)
+kubectl port-forward svc/todo-app-todo-web-app-frontend 3000:3000
+kubectl port-forward svc/todo-app-todo-web-app-backend 8000:8000
+
+# Upgrade deployment
+helm upgrade todo-app ./todo-web-app
+
+# Uninstall
+helm uninstall todo-app
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Pods Not Starting**:
+- Check: `kubectl describe pod <pod-name>`
+- View logs: `kubectl logs <pod-name>`
+
+**Image Pull Errors**:
+- Ensure `imagePullPolicy: Never` in values.yaml
+- Verify images loaded: `minikube image ls | grep todo`
+
+**Service Unreachable**:
+- Get Minikube IP: `minikube ip`
+- Check NodePort: `kubectl get svc`
+
 ## Version History
 
-- **Phase 3 (v3.0.0)**: AI-Powered Chatbot Integration (Current)
+- **Phase 4 (v4.0.0)**: Local Kubernetes Deployment (Current)
+- **Phase 3 (v3.0.0)**: AI-Powered Chatbot Integration (Legacy)
 - **Phase 2 (v2.0.0)**: Full-stack implementation (Legacy)
 - **Phase 1 (v0.1.0)**: In-memory console implementation (Legacy)

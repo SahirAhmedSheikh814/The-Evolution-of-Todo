@@ -113,3 +113,71 @@ npm start
 - **CORS Issues**: Check `NEXT_PUBLIC_API_URL` matches backend.
 - **Auth Errors**: Verify cookies are being set (HttpOnly).
 - **Console Errors**: Check `AuthContext` logic; ensure errors are handled via return values, not unchecked throws.
+
+---
+
+## Phase 4: Kubernetes Deployment
+
+### Docker Configuration
+
+The frontend is containerized using a multi-stage Dockerfile for optimized production builds:
+
+```dockerfile
+FROM node:20-alpine AS base
+
+# Dependencies stage
+FROM base AS deps
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+# Build stage
+FROM base AS builder
+WORKDIR /app
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
+
+# Production stage
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+RUN addgroup --system nodejs && adduser --system nextjs
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+USER nextjs
+EXPOSE 3000
+CMD ["node", "server.js"]
+```
+
+### Kubernetes Service
+
+- **Service Type**: NodePort
+- **Internal Port**: 3000
+- **External Port**: 30080
+- **Access URL**: `http://<minikube-ip>:30080`
+
+### Build & Deploy
+
+```bash
+# Get Minikube IP for API URL
+MINIKUBE_IP=$(minikube ip)
+
+# Build image with API URL baked in
+docker build -t todo-frontend:latest ./frontend \
+  --build-arg NEXT_PUBLIC_API_URL=http://${MINIKUBE_IP}:30800
+
+# Load into Minikube
+minikube image load todo-frontend:latest
+
+# Deploy via Helm
+helm install todo-app ./todo-web-app
+```
+
+### Environment Variables (Kubernetes)
+
+Configured in `todo-web-app/values.yaml`:
+
+- `NEXT_PUBLIC_API_URL`: Backend API endpoint (e.g., `http://192.168.49.2:30800`)

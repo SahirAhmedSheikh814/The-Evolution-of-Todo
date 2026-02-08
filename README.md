@@ -131,17 +131,16 @@ npm run dev
 
 The application will be available at [http://localhost:3000](http://localhost:3000).
 
+## Live Links
+Vercel Deployment link: [https://taskflow-seven-smoky.vercel.app/](https://taskflow-seven-smoky.vercel.app/)
+Backend API URL: [https://huggingface.co/spaces/sahirahmed814/Full_Stack_TODO_App](https://huggingface.co/spaces/sahirahmed814/Full_Stack_TODO_App)
+
 ## Feature Highlights
 
 - **Secure Authentication**: HttpOnly cookies with dynamic `Secure` flag handling (Local vs Prod).
 - **Responsive UI**: Mobile-first design with Tailwind CSS.
 - **Robust Error Handling**: User-friendly alerts without console pollution.
 - **Spec-Driven**: All features designed and specified before implementation.
-
-## Version History
-
-- **Phase 2 (v2.0.0)**: Full-stack implementation (Current)
-- **Phase 1 (v0.1.0)**: In-memory console implementation (Legacy)
 
 ---
 
@@ -182,9 +181,96 @@ An intelligent conversational agent "TaskFlow AI" integrated into the full-stack
 - **Real-Time Sync**: UI updates immediately when AI modifies tasks.
 - **Persistent History**: Chat conversations are saved and retrievable.
 
+---
+
+# Phase 4: Local Kubernetes Deployment
+
+A production-like local deployment of the full-stack Todo application using Docker containers, Minikube, and Helm Charts for Kubernetes orchestration.
+
+## Technology Stack
+
+- **Container Runtime**: Docker Desktop
+- **Kubernetes**: Minikube (Local Cluster)
+- **Package Manager**: Helm 3.x
+- **Orchestration**: kubectl, kubectl-ai
+
+## Architecture
+
+```
+┌─────────────────────────────────────────┐
+│          Kubernetes Cluster             │
+│  ┌───────────────────────────────────┐  │
+│  │  Frontend (NodePort :30080)       │  │
+│  │  - Next.js 16                     │  │
+│  │  - Port: 3000                     │  │
+│  └───────────┬───────────────────────┘  │
+│              │                          │
+│              │ HTTP Requests            │
+│              ▼                          │
+│  ┌───────────────────────────────────┐  │
+│  │  Backend (NodePort :30800)        │  │
+│  │  - FastAPI                        │  │
+│  │  - Port: 8000                     │  │
+│  │  - Connected to Neon PostgreSQL   │  │
+│  └───────────────────────────────────┘  │
+└─────────────────────────────────────────┘
+```
+
+## Quick Start
+
+### 1. Start Minikube
+
+```bash
+minikube start --driver=docker --memory=4096 --cpus=2
+```
+
+### 2. Build Docker Images
+
+```bash
+# Build backend
+docker build -t todo-backend:latest ./backend
+
+# Build frontend (with API URL)
+docker build -t todo-frontend:latest ./frontend \
+  --build-arg NEXT_PUBLIC_API_URL=http://$(minikube ip):30800
+```
+
+### 3. Load Images into Minikube
+
+```bash
+minikube image load todo-backend:latest
+minikube image load todo-frontend:latest
+```
+
+### 4. Deploy with Helm
+
+```bash
+helm install todo-app ./todo-web-app --namespace default
+```
+
+### 5. Access Application
+
+```bash
+# Get Minikube IP
+minikube ip
+
+# Frontend: http://<minikube-ip>:30080
+# Backend API: http://<minikube-ip>:30800
+# API Docs: http://<minikube-ip>:30800/docs
+```
+
+## Feature Highlights
+
+- **Containerized Services**: Multi-stage Docker builds for optimized images.
+- **Helm Charts**: Templated, version-controlled Kubernetes manifests.
+- **Health Checks**: Liveness and readiness probes for reliability.
+- **Resource Management**: CPU/Memory limits for predictable performance.
+- **Security**: Non-root containers with dedicated service accounts.
+
 ## Version History
 
-- **Phase 3 (v3.0.0)**: AI-Powered Chatbot Integration (Current)
+- **Phase 4 (v4.0.0)**: Local Kubernetes Deployment (Current)
+- **Phase 3 (v3.0.0)**: AI-Powered Chatbot Integration (Legacy)
 - **Phase 2 (v2.0.0)**: Full-stack implementation (Legacy)
 - **Phase 1 (v0.1.0)**: In-memory console implementation (Legacy)
 

@@ -113,3 +113,62 @@ alembic upgrade head
 - **Database Errors**: Ensure Neon DB URL is correct in `.env`.
 - **401 Unauthorized**: Check if `session_token` cookie is present and backend lookup key matches in `deps.py`.
 - **CORS Errors**: Verify allowed origins in `src/main.py`.
+
+---
+
+## Phase 4: Kubernetes Deployment
+
+### Docker Configuration
+
+The backend is containerized using a production-ready Dockerfile:
+
+```dockerfile
+FROM python:3.13-slim AS base
+WORKDIR /app
+
+# Install dependencies
+RUN apt-get update && apt-get install -y build-essential libpq-dev curl
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+COPY pyproject.toml requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+
+# Non-root user
+RUN useradd -m -u 1001 appuser
+USER appuser
+
+EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=10s CMD curl -f http://localhost:8000/health || exit 1
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+### Kubernetes Service
+
+- **Service Type**: NodePort
+- **Internal Port**: 8000
+- **External Port**: 30800
+- **Access URL**: `http://<minikube-ip>:30800`
+- **API Docs**: `http://<minikube-ip>:30800/docs`
+
+### Build & Deploy
+
+```bash
+# Build image
+docker build -t todo-backend:latest ./backend
+
+# Load into Minikube
+minikube image load todo-backend:latest
+
+# Deploy via Helm
+helm install todo-app ./todo-web-app
+```
+
+### Environment Variables (Kubernetes)
+
+Configured in `todo-web-app/values.yaml`:
+
+- `DATABASE_URL`: PostgreSQL connection string
+- `SECRET_KEY`: JWT secret
+- `OPENAI_API_KEY`: AI chatbot API key
+- `OPENAI_BASE_URL`: OpenAI endpoint
