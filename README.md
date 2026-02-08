@@ -218,54 +218,6 @@ A production-like local deployment of the full-stack Todo application using Dock
 
 ## Quick Start
 
-### 1. Start Minikube
-
-```bash
-minikube start --driver=docker --memory=4096 --cpus=2
-```
-
-### 2. Build Docker Images
-
-```bash
-# Build backend
-docker build -t todo-backend:latest ./backend
-
-# Build frontend (with API URL)
-docker build -t todo-frontend:latest ./frontend \
-  --build-arg NEXT_PUBLIC_API_URL=http://$(minikube ip):30800
-```
-
-### 3. Load Images into Minikube
-
-```bash
-minikube image load todo-backend:latest
-minikube image load todo-frontend:latest
-```
-
-### 4. Deploy with Helm
-
-```bash
-helm install todo-app ./todo-web-app --namespace default
-```
-
-### 5. Access Application
-
-```bash
-# Get Minikube IP
-minikube ip
-
-# Frontend: http://<minikube-ip>:30080
-# Backend API: http://<minikube-ip>:30800
-# API Docs: http://<minikube-ip>:30800/docs
-```
-
-## Feature Highlights
-
-- **Containerized Services**: Multi-stage Docker builds for optimized images.
-- **Helm Charts**: Templated, version-controlled Kubernetes manifests.
-- **Health Checks**: Liveness and readiness probes for reliability.
-- **Resource Management**: CPU/Memory limits for predictable performance.
-- **Security**: Non-root containers with dedicated service accounts.
 
 ## Version History
 
