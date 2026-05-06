@@ -1,8 +1,32 @@
 # The Evolution of Todo – Mastering Spec-Driven Development & Cloud Native AI
 
-**Hackathon Project:** This repository chronicles the journey of building a production-grade application using **Spec-Driven Development (SDD)** principles, evolving from a simple in-memory Python console app (Phase 1) to a scalable, cloudy-native full-stack solution (Phase 2).
+**Hackathon Project:**  This repository showcases the complete evolution of a production-grade Todo application built using **Spec-Driven Development (SDD)** principles — starting from a simple in-memory Python CLI application (Phase 1), progressing into a modern cloud-native full-stack platform (Phase 2), enhanced with an AI-powered conversational assistant (Phase 3), and finally deployed using containerized Kubernetes infrastructure (Phase 4).
 
 ---
+
+# Project Evolution Overview
+
+| Phase | Title | Description | Tech Stack / Frameworks | Key Features | Status |
+|------|------|------|------|------|------|
+| **Phase 1** | **Python Console Application** | A robust in-memory CLI Todo application built to demonstrate clean architecture, strict typing, testing, and modular Python development. | **Python 3.13+**, UV, pytest, pylint, mypy | Add/Delete/Complete Tasks, CLI Interface, Session Persistence, Input Validation, High Test Coverage | ✅ Completed |
+| **Phase 2** | **Full-Stack Cloud Native Application** | A modern scalable full-stack Todo platform with authentication, database integration, and responsive frontend architecture. | **Next.js 16+, TypeScript, Tailwind CSS, FastAPI, SQLModel, PostgreSQL, JWT Auth** | Authentication System, REST API, Responsive UI, Neon PostgreSQL Integration, Spec-Driven Architecture | ✅ Completed |
+| **Phase 3** | **AI-Powered Chatbot Integration** | Integrated an intelligent AI assistant "TaskFlow AI" for conversational task management inside the Todo application. | **OpenAI API, FastAPI AI Services, React Chat Widget, Framer Motion** | Natural Language Task Management, AI Chat Interface, Real-Time Sync, Persistent Chat History | ✅ Completed |
+| **Phase 4** | **Local Kubernetes Deployment** | Production-like deployment of the application using Docker, Kubernetes, Minikube, and Helm orchestration. | **Docker, Kubernetes, Minikube, Helm, kubectl** | Containerized Deployment, Helm Charts, Health Checks, Resource Limits, Secure Infrastructure | ✅ Completed |
+
+---
+
+## Live Project Links
+
+| Service | URL |
+|------|------|
+| **Frontend Deployment** | https://taskflow-seven-smoky.vercel.app/ |
+| **Backend API** | https://huggingface.co/spaces/sahirahmed814/Full_Stack_TODO_App |
+| **GitHub Repository** | https://github.com/SahirAhmedSheikh814/The-Evolution-of-Todo |
+
+
+---
+
+# *Detailed Breakdown of Each Phase*
 
 # Phase 1: Python Console Application
 
